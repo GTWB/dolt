@@ -20,7 +20,7 @@ const taskContentHtml = function (title, description, key, done) {
   <input name="checkbox" type="checkbox" class='task' ${done ? "checked" : ""}/>
   <div class="taskContent">
   <h3>${title}</h3>
-  <p class=${done ? "done" : ""}>${description}</p>
+  <p style='white-space:pre-wrap' class=${done ? "done" : ""}>${description}</p>
   </div>
   <button class='deleteTask'>Delete</button>
   </div>`;
