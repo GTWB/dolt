@@ -55,6 +55,7 @@ h1 {
   align-items: start;
   gap: 0.5rem;
   width: 100%;
+  overflow: auto;
 }
 
 .searchBar {
@@ -137,7 +138,7 @@ h1 {
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   gap: 20px;
-  text-align: justify;
+
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
@@ -179,7 +180,7 @@ h1 {
   color: #dc2626;
   border: 1px solid #fecaca;
   border-radius: 12px;
-  padding: 8px 16px;
+  padding: 8px 8px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -391,10 +392,10 @@ input {
   color: #1e293b;
 }
 
-.closeButton .material-symbols-outlined {
+/* .closeButton .material-symbols-outlined {
   padding: 0;
-  font-size: 20px;
-}
+  font-size: 20px !important;
+} */
 
 /* Responsive Design */
 
@@ -436,11 +437,6 @@ input {
     flex-wrap: wrap;
   }
 
-  /*  .taskInputInterface > * {
-    margin: 20px;
-    padding: 24px;
-  } */
-
   .taskItem {
     padding: 16px;
   }
@@ -454,5 +450,8 @@ input {
 
   .filterTasks p {
     margin-bottom: 8px;
+  }
+  .material-symbols-outlined {
+    font-size: 15px !important;
   }
 }

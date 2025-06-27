@@ -22,7 +22,7 @@ const taskContentHtml = function (title, description, key, done) {
   <h3>${title}</h3>
   <p style='white-space:pre-wrap' class=${done ? "done" : ""}>${description}</p>
   </div>
-  <button class='deleteTask'>Delete</button>
+  <button class='deleteTask material-symbols-outlined'>delete</button>
   </div>`;
 };
 
@@ -187,6 +187,7 @@ const searchTask = function () {
 
   // Get all keys from localStorage and sort them
   const key = Object.keys(localStorage).sort();
+  const html = `<p class='itemNotFound' style='text-align:center'>Task Not Found</p>`;
 
   // Get the search text from the input and convert to lowercase
   const text = searchInput.value.toLowerCase();
@@ -199,8 +200,13 @@ const searchTask = function () {
       if (
         value.title.toLowerCase().includes(text) ||
         value.text.toLowerCase().includes(text)
-      )
+      ) {
         return value;
+      } else {
+        console.log("item not found");
+        taskContainer.innerHTML = html; // If item not found, insert message into the dom
+        hideShowDeleteAllBtn();
+      }
     })
     .forEach((el) => {
       // For each matching task, get its data
