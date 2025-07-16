@@ -99,7 +99,10 @@ const removeTask = function (e) {
 const markAsDone = function (e) {
   if (e.target.classList.contains("task")) {
     const taskText = e.target.parentElement.querySelector("p");
+    const taskTitle = e.target.parentElement.querySelector("h3");
+
     taskText.classList.toggle("done");
+    taskTitle.classList.toggle("done");
     const getKey = e.target.parentElement.dataset.key;
     const taskDone = JSON.parse(localStorage.getItem(getKey));
     if (taskText.classList.contains("done")) {
@@ -187,7 +190,6 @@ const searchTask = function () {
 
   // Get all keys from localStorage and sort them
   const key = Object.keys(localStorage).sort();
-  const html = `<p class='itemNotFound' style='text-align:center'>Task Not Found</p>`;
 
   // Get the search text from the input and convert to lowercase
   const text = searchInput.value.toLowerCase();
@@ -202,10 +204,6 @@ const searchTask = function () {
         value.text.toLowerCase().includes(text)
       ) {
         return value;
-      } else {
-        console.log("item not found");
-        taskContainer.innerHTML = html; // If item not found, insert message into the dom
-        hideShowDeleteAllBtn();
       }
     })
     .forEach((el) => {
