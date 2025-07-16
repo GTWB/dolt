@@ -1,0 +1,12 @@
+# Node modules
+node_modules/
+
+# Cypress output
+cypress/screenshots/
+cypress/videos/
+
+# System files
+.DS_Store
+
+# Log files
+npm-debug.log
