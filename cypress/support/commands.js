@@ -23,3 +23,10 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add("addTask", (title, description = "Test description") => {
+  cy.get(".addButton").click();
+  cy.get(".titleInput").type(title);
+  cy.get(".descriptionInput").type(description);
+  cy.get(".addTask").click();
+});

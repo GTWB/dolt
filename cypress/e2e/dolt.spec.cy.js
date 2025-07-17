@@ -1,42 +1,92 @@
-// Crea una funzione di utilità all'inizio del file
-function addTask(title, description) {
-  cy.get(".addButton").click();
-  cy.get(".titleInput").type(title);
-  cy.get(".descriptionInput").type(description);
-  cy.wait(2000);
-  cy.get(".addTask").click();
-  cy.get(".taskItem").should("contain", title);
-  cy.get(".taskItem").should("contain", description);
-}
-
-describe("Dolt App", () => {
+describe("Dolt – Task Manager App", () => {
   beforeEach(() => {
-    cy.visit("https://gtwb.github.io/dolt/");
+    cy.visit("https://gtwb.github.io/dolt");
+    cy.clearLocalStorage();
   });
 
-  it("display the correct title", () => {
-    cy.get("h1").contains("Dolt");
+  it("should load the app", () => {
+    cy.contains("Dolt📌");
+    cy.contains("Your simple, no-fuss task manager");
   });
 
-  it("add a new task", () => {
-    addTask("Giuseppe", "Is testing the application that he made");
-    addTask("Erika Cucchiara", "She's working at St Thomas Hospital");
+  it("should open and close the task input interface", () => {
+    cy.get(".addButton").click();
+    cy.contains("Create New Task");
+    cy.get(".closeButton").click();
+    cy.get(".taskInputInterface").should("not.exist");
   });
 
-  it("should delete a specific task by its title", () => {
-    const title = "Task to Delete";
-    const description = "This task will be removed";
+  it("should not allow adding task with empty fields", () => {
+    cy.get(".addButton").click();
+    cy.get(".addTask").click();
+    cy.get(".taskContainer .taskItem").should("not.exist");
+  });
 
-    // Step 1: Aggiunge un nuovo task
-    addTask(title, description);
+  it("should add a new task", () => {
+    cy.get(".addButton").click();
+    cy.get(".titleInput").type("Test Task");
+    cy.get(".descriptionInput").type("This is a test task");
+    cy.get(".addTask").click();
+    cy.contains("Test Task");
+    cy.contains("This is a test task");
+  });
+
+  it("should not allow duplicate title or description", () => {
+    cy.addTask("Unique Title", "Unique Description");
+    cy.get(".addButton").click();
+    cy.get(".titleInput").type("Unique Title");
+    cy.get(".descriptionInput").type("Unique Description");
+    cy.on("window:alert", (txt) => {
+      expect(txt).to.contain("already exist");
+    });
+    cy.get(".closeButton").click();
+  });
+
+  it("should mark a task as completed and persist", () => {
+    cy.addTask("Complete Me", "Mark this as done");
+    cy.get('input[type="checkbox"]').check();
+    cy.reload();
+    cy.get('input[type="checkbox"]').should("be.checked");
+  });
+
+  it("should filter tasks correctly", () => {
+    cy.addTask("To Do Task", "Still pending");
+    cy.addTask("Completed Task", "Already done");
+    cy.get(".taskItem").eq(1).find('input[type="checkbox"]').check();
+
+    cy.get(".filter.completed").click();
+    cy.contains("Completed Task");
+    cy.contains("To Do Task").should("not.exist");
+
+    cy.get(".filter.toDo").click();
+    cy.contains("To Do Task");
+    cy.contains("Completed Task").should("not.exist");
+
+    cy.get(".filter.all").click();
+    cy.contains("To Do Task");
+    cy.contains("Completed Task");
+  });
+
+  it("should search tasks by keyword", () => {
+    cy.addTask("Groceries", "Buy milk and eggs");
+    cy.addTask("Work", "Send the report");
+
+    cy.get("#input").type("milk");
+    cy.contains("Buy milk and eggs");
+    cy.contains("Send the report").should("not.exist");
+  });
+
+  it("should delete a specific task", () => {
+    cy.addTask("Task to Remove", "This will be removed");
     cy.wait(2000);
-    // Step 2: Verifica che il task esista
-    cy.contains(".taskItem", title).should("exist");
+    cy.contains("delete").click();
+    cy.contains("Task to Delete").should("not.exist");
+  });
 
-    // Step 3: Trova il task e clicca su "Delete"
-    cy.contains(".taskItem", title).find(".deleteTask").click();
-
-    // Step 4: Verifica che il task sia stato rimosso
-    cy.contains(".taskItem", title).should("not.exist");
+  it("should clear all tasks", () => {
+    cy.addTask("First");
+    cy.addTask("Second");
+    cy.get(".deleteAll").click();
+    cy.get(".taskItem").should("not.exist");
   });
 });
