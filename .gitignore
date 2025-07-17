@@ -10,3 +10,5 @@ cypress/videos/
 
 # Log files
 npm-debug.log
+
+styleOld.css
