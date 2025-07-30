@@ -1,7 +1,8 @@
 describe("Dolt – Task Manager App", () => {
   beforeEach(() => {
-    cy.visit("https://gtwb.github.io/dolt");
-    cy.clearLocalStorage();
+    cy.clearLocalStorage().then(() => {
+      cy.visit("https://gtwb.github.io/dolt");
+    });
   });
 
   it("should load the app", () => {
@@ -78,9 +79,14 @@ describe("Dolt – Task Manager App", () => {
 
   it("should delete a specific task", () => {
     cy.addTask("Task to Remove", "This will be removed");
-    cy.wait(2000);
+    /*  cy.wait(2000);
     cy.contains("delete").click();
-    cy.contains("Task to Delete").should("not.exist");
+    cy.contains("Task to Delete").should("not.exist"); */
+    cy.contains("Task to Remove")
+      .parents(".taskItem")
+      .find(".deleteTask")
+      .click();
+    cy.contains("Task to Remove").should("not.exist");
   });
 
   it("should clear all tasks", () => {
@@ -88,5 +94,26 @@ describe("Dolt – Task Manager App", () => {
     cy.addTask("Second");
     cy.get(".deleteAll").click();
     cy.get(".taskItem").should("not.exist");
+  });
+
+  it("Should show or hide the 'Clear List' button depending on tasks", () => {
+    // All tasks cleared: button should be hidden
+    cy.get(".deleteAll").should("not.be.visible");
+
+    // Add one task → button should be visible
+    cy.addTask("Sample Task", "Sample Description");
+
+    cy.get(".deleteAll").should("be.visible");
+
+    // Delete the task → button should be hidden again
+    cy.get(".deleteAll").click();
+
+    cy.get(".deleteAll").should("not.be.visible");
+  });
+
+  it("should persist tasks between page reloads", () => {
+    cy.addTask("Persistent Task", "Should survive reload");
+    cy.reload();
+    cy.contains("Persistent Task");
   });
 });
