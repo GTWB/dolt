@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 describe("Dolt – Task Manager App", () => {
   beforeEach(() => {
     cy.clearLocalStorage().then(() => {
